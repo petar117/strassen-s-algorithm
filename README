@@ -1,0 +1,34 @@
+This is how the distributed algorithm version is implemented.
+
+The main idea behind it we have multiple servers (could be run locally
+or on different machines) that computes the product of two matrices.
+They use the linear or parallel version of Strassen's algorithm for
+that.  There's no limit on their numbers but their addresses are
+hardcoded.  Thus, we can't add or remove a server dynamically.
+
+The "client" code read the size of the matrices as input, it then uses
+the first iteration of Strassen's algorithm, but each muliplication is
+sent to a worker server.  The later is choosen randomly, we don't try
+estimate the load of each server so we assume that they have the same
+computing capabilities.
+
+The communication between the client and the server uses Java's Remote
+Method Invocation (basically equivalent to a Remote Procedure Call).
+
+For testing purposes we run the workers locally but on different
+ports.  Before running the test, they should be started.  By default,
+there are 3 of them listening on port 3000, 3001 and 3002 (see the
+RemoteMultiplier class in Client.java).
+
+Under Windows we can start them with:
+start java Server 3000
+start java Server 3001
+start java Server 3002
+
+Under Linux or and another Unix:
+java Server 3000&
+java Server 3001&
+java Server 3002&
+
+Then we're good to go:
+java Client
